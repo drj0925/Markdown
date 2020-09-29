@@ -1,0 +1,38 @@
+###Spider
+
+```
+import requests
+import lxml
+from lxml import etree
+
+def getHTMLText(url):
+    try:
+        r = requests.get(url, timeout = 30)
+        r.raise_for_status()
+        r.encoding = r.apparent_encoding
+        html = r.text
+        return html
+    except:
+        return "产生异常"
+
+def fillList(html):
+    et_html = etree.HTML(html)
+    Name_list = et_html.xpath("//*[@id='coolsites_wrapper']/div[1]/ul/li/div/a/@data-title")
+    Url_list = et_html.xpath("//*[@id='coolsites_wrapper']/div[1]/ul/li/div/a/@href")
+    all_list = zip(Name_list, Url_list)
+    return all_list
+
+def printList(all_list):
+    for name, url in all_list:
+        print(name, ':', url)
+
+def main():
+    haoinfo = []
+    url = "https://www.hao123.com"
+    html= getHTMLText(url)
+    all_list = fillList(html)
+    printList(all_list)
+
+
+main()
+```
